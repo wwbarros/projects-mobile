@@ -89,7 +89,7 @@ class TeamMembersSelectionView extends StatelessWidget {
       body: Obx(
         () {
           if (usersDataSource.loaded.value == true &&
-              usersDataSource.usersList.isNotEmpty &&
+              usersDataSource.usersWithoutProjectManager.isNotEmpty &&
               usersDataSource.isSearchResult.value == false) {
             return UsersDefault(
               selfUserItem: controller.selfUserItem as PortalUserItemController?,
@@ -97,11 +97,12 @@ class TeamMembersSelectionView extends StatelessWidget {
               onTapFunction: controller.selectTeamMember as void Function(PortalUserItemController),
             );
           }
-          if (usersDataSource.nothingFound.value == true) {
+          if (usersDataSource.nothingFound.value == true ||
+              usersDataSource.usersWithoutProjectManager.isEmpty) {
             return Column(children: const [NothingFound()]);
           }
           if (usersDataSource.loaded.value == true &&
-              usersDataSource.usersList.isNotEmpty &&
+              usersDataSource.usersWithoutProjectManager.isNotEmpty &&
               usersDataSource.isSearchResult.value == true) {
             return UsersSearchResult(
               usersDataSource: usersDataSource,

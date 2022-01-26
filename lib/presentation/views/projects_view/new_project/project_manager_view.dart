@@ -81,7 +81,7 @@ class ProjectManagerSelectionView extends StatelessWidget {
       body: Obx(
         () {
           if (controller.usersLoaded.value as bool &&
-              usersDataSource.usersWithoutVisitors.isNotEmpty &&
+              usersDataSource.usersList.isNotEmpty &&
               !usersDataSource.isSearchResult.value) {
             return UsersDefault(
               selfUserItem: controller.selfUserItem as PortalUserItemController,
@@ -95,7 +95,7 @@ class ProjectManagerSelectionView extends StatelessWidget {
             return Column(children: const [NothingFound()]);
           }
           if (usersDataSource.loaded.value == true &&
-              usersDataSource.usersWithoutVisitors.isNotEmpty &&
+              usersDataSource.usersList.isNotEmpty &&
               usersDataSource.isSearchResult.value == true) {
             return UsersSearchResult(
               usersDataSource: usersDataSource,
@@ -189,21 +189,28 @@ class UsersDefault extends StatelessWidget {
             else
               return const SizedBox();
           }),
-          Container(
-            padding: const EdgeInsets.only(left: 16),
-            child: Text(tr('users'), style: TextStyleHelper.body2()),
-          ),
-          const SizedBox(height: 26),
-          Column(children: [
-            ListView.builder(
-              physics: const ScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (c, i) =>
-                  PortalUserItem(userController: users[i], onTapFunction: onTapFunction),
-              itemExtent: 65,
-              itemCount: users.length,
-            )
-          ]),
+          Obx(() {
+            if (users.isNotEmpty) {
+              return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Container(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(tr('users'), style: TextStyleHelper.body2()),
+                ),
+                const SizedBox(height: 26),
+                Column(children: [
+                  ListView.builder(
+                    physics: const ScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (c, i) =>
+                        PortalUserItem(userController: users[i], onTapFunction: onTapFunction),
+                    itemExtent: 65,
+                    itemCount: users.length,
+                  )
+                ]),
+              ]);
+            } else
+              return const SizedBox();
+          }),
         ],
       ),
     );
