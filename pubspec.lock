@@ -1223,9 +1223,9 @@ packages:
   share_plus:
     dependency: "direct main"
     description:
-      name: share_plus
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "/Users/garanin/Documents/repo/plus_plugins/packages/share_plus/share_plus"
+      relative: false
+    source: path
     version: "4.0.4"
   share_plus_linux:
     dependency: transitive
