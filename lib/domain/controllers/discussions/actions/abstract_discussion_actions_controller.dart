@@ -32,6 +32,7 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:projects/data/models/from_api/project_detailed.dart';
@@ -51,9 +52,12 @@ abstract class DiscussionActionsController extends GetxController {
   FocusNode get titleFocus => FocusNode();
   late TextEditingController _titleController;
   late TextEditingController _userSearchController;
+
   TextEditingController get titleController => _titleController;
+
   TextEditingController get userSearchController => _userSearchController;
   final textController = HtmlEditorController();
+  final quillController = QuillController.basic();
 
   final setTitleError = false.obs;
   final setTextError = false.obs;
@@ -61,7 +65,9 @@ abstract class DiscussionActionsController extends GetxController {
   final titleIsEmpty = true.obs;
 
   void setupSubscribersSelection();
+
   void addSubscriber(PortalUserItemController user, {bool fromUsersDataSource = false});
+
   void removeSubscriber(PortalUserItemController user);
 
   void changeTitle(String newText);
@@ -69,7 +75,7 @@ abstract class DiscussionActionsController extends GetxController {
 
   void clearUserSearch();
   void confirmText() async {
-    final _text = await textController.getText();
+    final _text = quillController.document.getPlainText(0, quillController.document.length);
 
     if (_text.isNotEmpty && _text != '<br>')
       text.value = _text;
@@ -80,7 +86,7 @@ abstract class DiscussionActionsController extends GetxController {
   }
 
   void leaveTextView() async {
-    final t = await textController.getText();
+    final t = await quillController.getPlainText();
 
     if (t == text.value || t == '<br>') {
       Get.find<NavigationController>().back();

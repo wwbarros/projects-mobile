@@ -96,7 +96,7 @@ dependencies:
   flutter_widget_from_html: ^0.8.5
   collection: ^1.15.0-nullsafety.4
   webview_cookie_manager: ^2.0.6
-
+  flutter_quill: ^4.2.3
   modal_bottom_sheet: ^2.0.0
   settings_ui: ^2.0.2
   android_path_provider: ^0.3.0

@@ -48,7 +48,7 @@ class NewTaskCommentController extends NewCommentController {
 
   @override
   Future addComment() async {
-    final text = await textController.getText();
+    final text = await textController.getPlainText();
     if (text.isEmpty || text == '<br>') {
       await emptyTitleError();
     } else {
@@ -71,7 +71,7 @@ class NewTaskCommentController extends NewCommentController {
 
   @override
   Future addReplyComment() async {
-    final text = await textController.getText();
+    final text = await textController.getPlainText();
     if (text.isEmpty || text == '<br>') {
       await emptyTitleError();
     } else {

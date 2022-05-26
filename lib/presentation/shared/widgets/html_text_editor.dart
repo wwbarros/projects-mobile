@@ -30,16 +30,8 @@
  *
  */
 
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:html_editor_enhanced/html_editor.dart';
-import 'package:projects/data/services/comments_service.dart';
-import 'package:projects/domain/controllers/messages_handler.dart';
-import 'package:projects/internal/locator.dart';
-import 'package:projects/presentation/shared/theme/custom_theme.dart';
-import 'package:projects/presentation/shared/theme/text_styles.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 class HtmlTextEditor extends StatelessWidget {
   const HtmlTextEditor({
@@ -51,7 +43,7 @@ class HtmlTextEditor extends StatelessWidget {
     required this.textController,
   }) : super(key: key);
 
-  final HtmlEditorController textController;
+  final QuillController textController;
   final String? hintText;
   final String? initialText;
   final double? height;
@@ -59,71 +51,18 @@ class HtmlTextEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HtmlEditor(
-      controller: textController,
-      callbacks: Callbacks(onNavigationRequestMobile: (url) {
-        launch(url);
-        return NavigationActionPolicy.CANCEL;
-      }),
-      htmlToolbarOptions: HtmlToolbarOptions(
-        mediaUploadInterceptor: (file, type) async {
-          textController.setFocus();
-          final result = await locator<CommentsService>().uploadImages(file);
-          if (result != null && result.isURL)
-            textController.insertNetworkImage(result);
-          else
-            MessagesHandler.showSnackBar(context: Get.context!, text: result ?? tr('error'));
-
-          return false;
-        },
-        linkInsertInterceptor: (text, url, isNewWindow) {
-          textController.setFocus();
-          textController.insertLink(text, url, isNewWindow);
-          return false;
-        },
-        mediaLinkInsertInterceptor: (link, type) {
-          textController.setFocus();
-          return true;
-        },
-        textStyle: TextStyleHelper.body2(color: Theme.of(context).colors().onBackground),
-        defaultToolbarButtons: const [
-          StyleButtons(),
-          FontSettingButtons(fontSizeUnit: false),
-          FontButtons(
-            clearAll: false,
-            subscript: false,
-            superscript: false,
+    return Column(
+      children: [
+        QuillToolbar.basic(controller: textController),
+        Expanded(
+          child: Container(
+            child: QuillEditor.basic(
+              controller: textController,
+              readOnly: false, // true for view only mode
+            ),
           ),
-          // they don't work
-          ColorButtons(foregroundColor: false, highlightColor: false),
-          ListButtons(listStyles: false),
-          ParagraphButtons(
-            textDirection: false,
-            lineHeight: false,
-            caseConverter: false,
-          ),
-          InsertButtons(
-            video: false,
-            audio: false,
-            table: false,
-            hr: false,
-          ),
-        ],
-      ),
-      htmlEditorOptions: HtmlEditorOptions(
-        hint: hintText,
-        initialText: initialText,
-      ),
-      otherOptions: OtherOptions(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).colors().colorError,
-            width: 2,
-            style: hasError ? BorderStyle.solid : BorderStyle.none,
-          ),
-        ),
-        height: Get.height,
-      ),
+        )
+      ],
     );
   }
 }

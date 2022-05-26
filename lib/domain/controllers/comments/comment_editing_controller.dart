@@ -32,8 +32,8 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:get/get.dart';
-import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:projects/data/services/comments_service.dart';
 import 'package:projects/domain/controllers/comments/item_controller/abstract_comment_item_controller.dart';
 import 'package:projects/domain/controllers/navigation_controller.dart';
@@ -55,12 +55,12 @@ class CommentEditingController extends GetxController {
 
   RxBool setTitleError = false.obs;
 
-  final _textController = HtmlEditorController();
+  final _textController = QuillController.basic();
 
-  HtmlEditorController get textController => _textController;
+  QuillController get textController => _textController;
 
   Future<void> confirm() async {
-    final text = await _textController.getText();
+    final text = await _textController.getPlainText();
 
     if (text.isEmpty || text == '<br>') {
       setTitleError.value = true;
@@ -84,7 +84,7 @@ class CommentEditingController extends GetxController {
   }
 
   Future<void> leavePage() async {
-    final text = await _textController.getText();
+    final text = await _textController.getPlainText();
     if (text != commentBody) {
       await Get.find<NavigationController>().showPlatformDialog(StyledAlertDialog(
         titleText: tr('discardChanges'),

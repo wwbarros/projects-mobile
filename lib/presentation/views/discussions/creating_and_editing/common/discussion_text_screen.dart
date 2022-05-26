@@ -73,7 +73,7 @@ class NewDiscussionTextScreen extends StatelessWidget {
         ),
         body: HtmlTextEditor(
           initialText: controller.text.value,
-          textController: controller.textController,
+          textController: controller.quillController,
           hintText: tr('discussionText'),
         ),
       ),
